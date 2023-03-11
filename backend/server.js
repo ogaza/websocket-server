@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
   console.log(`connected: ${socket.id}`);
 
   // send all on connection established
-  io.emit('todo:get', { todos });
+  // io.emit('todo:get', { todos });
 
   socket.on('todo:get', () => {
     try {
