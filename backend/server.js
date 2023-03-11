@@ -4,16 +4,16 @@ import handler from 'serve-handler';
 import { Server } from 'socket.io';
 
 let newId = 1;
-let todos = [];
+let items = [];
 
 function getNewId() {
-  const todosLength = todos.length;
+  const itemsLength = items.length;
 
-  if (!todosLength) return 1;
+  if (!itemsLength) return 1;
 
-  const existingIds = todos.map(({ id }) => id).sort();
+  const existingIds = items.map(({ id }) => id).sort();
 
-  return existingIds[todosLength - 1] + 1;
+  return existingIds[itemsLength - 1] + 1;
 }
 
 // serve static assets
@@ -34,33 +34,33 @@ io.on('connection', (socket) => {
   console.log(`connected: ${socket.id}`);
 
   // send all on connection established
-  // io.emit('todo:get', { todos });
+  // io.emit('item:get', { items });
 
-  socket.on('todo:get', () => {
+  socket.on('item:get', () => {
     try {
-      console.log('todos requested');
-      io.emit('todo:get', { todos });
+      console.log('items requested');
+      io.emit('item:get', { items });
     } catch (e) {
       console.log('error: ', e);
     }
   });
 
-  socket.on('todo:post', (todo) => {
+  socket.on('item:post', (item) => {
     try {
-      console.log('got todo: ', todo);
-      todos.push({ ...todo, id: newId });
+      console.log('got item: ', item);
+      items.push({ ...item, id: newId });
       newId++;
-      io.emit('todo:get', { todos });
+      io.emit('item:get', { items });
     } catch (e) {
       console.log('error: ', e);
     }
   });
 
-  socket.on('todo:delete', (todoId) => {
+  socket.on('item:delete', (itemId) => {
     try {
-      console.log('requested deletion of todo with the id: ', todoId);
-      todos = todos.filter((x) => x.id !== todoId);
-      io.emit('todo:get', { todos });
+      console.log('requested deletion of item with the id: ', itemId);
+      items = items.filter((x) => x.id !== itemId);
+      io.emit('item:get', { items });
     } catch (e) {
       console.log('error: ', e);
     }
