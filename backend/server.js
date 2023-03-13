@@ -4,17 +4,7 @@ import handler from 'serve-handler';
 import { Server } from 'socket.io';
 
 let newId = 1;
-let items = [];
-
-function getNewId() {
-  const itemsLength = items.length;
-
-  if (!itemsLength) return 1;
-
-  const existingIds = items.map(({ id }) => id).sort();
-
-  return existingIds[itemsLength - 1] + 1;
-}
+let itemsDb = [];
 
 // serve static assets
 const server = http.createServer((request, response) => {
@@ -30,39 +20,49 @@ const io = new Server(server, {
   }
 });
 
+const operationDelayInMs = 1000;
+
 io.on('connection', (socket) => {
   console.log(`connected: ${socket.id}`);
 
   // send all on connection established
   // io.emit('item:get', { items });
 
-  socket.on('item:get', () => {
+  socket.on('item:get', async () => {
+    console.log('all items requested');
+
     try {
-      console.log('items requested');
+      const items = await getItems();
       io.emit('item:get', { items });
     } catch (e) {
-      console.log('error: ', e);
+      console.log(e);
+      io.emit('item:get', { items: [] });
     }
   });
 
-  socket.on('item:post', (item) => {
+  socket.on('item:post', async (item) => {
+    console.log('received item: ', item);
+
     try {
-      console.log('got item: ', item);
-      items.push({ ...item, id: newId });
-      newId++;
+      await postItem(item);
+      const items = await getItems();
       io.emit('item:get', { items });
     } catch (e) {
       console.log('error: ', e);
+      io.emit('item:get', { items: [] });
     }
   });
 
-  socket.on('item:delete', (itemId) => {
+  socket.on('item:delete', async (itemId) => {
+    console.log('requested deletion of item with the id: ', itemId);
+
     try {
-      console.log('requested deletion of item with the id: ', itemId);
-      items = items.filter((x) => x.id !== itemId);
-      io.emit('item:get', { items });
+      await deleteItem(itemId);
+      // const items = await getItems();
+      io.emit('item:delete', { itemId });
     } catch (e) {
       console.log('error: ', e);
+      io.emit('item:get', { items: [] });
     }
   });
 
@@ -73,3 +73,40 @@ io.on('connection', (socket) => {
 
 const port = process.env.PORT || 8008;
 server.listen(port, () => console.log(`Server running at http://localhost:${port}`));
+
+function getItems() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(itemsDb);
+    }, operationDelayInMs);
+  });
+}
+
+function postItem(item) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      itemsDb.push({ ...item, id: newId });
+      newId++;
+      resolve();
+    }, operationDelayInMs);
+  });
+}
+
+function deleteItem(itemId) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      itemsDb = itemsDb.filter((x) => x.id !== itemId);
+      resolve();
+    }, operationDelayInMs);
+  });
+}
+
+function getNewId() {
+  const itemsLength = itemsDb.length;
+
+  if (!itemsLength) return 1;
+
+  const existingIds = itemsDb.map(({ id }) => id).sort();
+
+  return existingIds[itemsLength - 1] + 1;
+}
