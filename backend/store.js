@@ -45,7 +45,7 @@ function getNewId() {
 }
 
 export function createItemsListsDb() {
-  const initialItems = [{ id: 1 }];
+  const initialItems = [{ id: 1 }, { id: 2 }];
 
   return createStore(initialItems);
 }
