@@ -2,7 +2,9 @@ export function createItemsDb() {
   const initialItems = [
     { id: 1, text: 'item 1', completed: false, created: 1678698280962, listId: 1 },
     { id: 2, text: 'item 2', completed: false, created: 1678698280962, listId: 1 },
-    { id: 3, text: 'item 3', completed: false, created: 1678698280962, listId: 1 }
+    { id: 3, text: 'item 3', completed: false, created: 1678698280962, listId: 2 },
+    { id: 4, text: 'item 4', completed: false, created: 1678698280962, listId: 2 },
+    { id: 5, text: 'item 5', completed: false, created: 1678698280962, listId: 2 }
   ];
 
   return createStore(initialItems);
@@ -14,8 +16,12 @@ function createStore(initailState) {
   const store = [...initailState];
 
   return {
-    get: function () {
-      return [...store];
+    get: function (options = {}) {
+      const [firstKey] = Object.keys(options);
+
+      const filtered = store.filter((x) => x[firstKey] === options[firstKey]);
+
+      return [...filtered];
     },
     add: function (item) {
       store.push({ ...item, id: nextId });
@@ -38,4 +44,8 @@ function getNewId() {
   return existingIds[itemsLength - 1] + 1;
 }
 
-let itemLists = [{ id: 1 }];
+export function createItemsListsDb() {
+  const initialItems = [{ id: 1 }];
+
+  return createStore(initialItems);
+}

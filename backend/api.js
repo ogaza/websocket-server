@@ -7,10 +7,10 @@ export function createApi(store) {
 }
 
 function createGet(store) {
-  return function get() {
+  return function get(options = {}) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(store.get());
+        resolve(store.get(options));
       }, operationDelayInMs / 4);
     });
   };

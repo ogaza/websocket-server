@@ -4,11 +4,11 @@ export function createListener(io, namespace, api) {
   const eventDelete = `${namespace}:delete`;
 
   return async function listeners(socket) {
-    socket.on(eventGet, async () => {
-      console.log(`all ${namespace}s requested`);
+    socket.on(eventGet, async (options = {}) => {
+      console.log(`all ${namespace}s requested with options: `, options);
 
       try {
-        const items = await api.get();
+        const items = await api.get(options);
         io.emit(eventGet, { items });
       } catch (e) {
         console.log(e);

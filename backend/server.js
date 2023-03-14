@@ -4,7 +4,7 @@ import handler from 'serve-handler';
 import { Server } from 'socket.io';
 import { createListener } from './listeners.js';
 import { createApi } from './api.js';
-import { createItemsDb } from './store.js';
+import { createItemsDb, createItemsListsDb } from './store.js';
 
 // serve static assets
 const server = http.createServer((request, response) => {
@@ -35,6 +35,11 @@ const itemsStore = createItemsDb();
 const itemsApi = createApi(itemsStore);
 const itemListeners = createListener(io, 'item', itemsApi);
 io.on('connection', itemListeners);
+
+const itemssListsStore = createItemsListsDb();
+const itemsListsApi = createApi(itemssListsStore);
+const itemsListsListeners = createListener(io, 'itemLists', itemsListsApi);
+io.on('connection', itemsListsListeners);
 
 const port = process.env.PORT || 8008;
 server.listen(port, () => console.log(`Server running at http://localhost:${port}`));
