@@ -20,9 +20,9 @@ export function createListener(io, namespace, api) {
       console.log(`received ${namespace}: `, item);
 
       try {
-        await api.post(item);
-        const items = await api.get();
-        io.emit(eventGet, { items });
+        const newItem = await api.post(item);
+        console.log('item added:', newItem);
+        io.emit(eventPost, { newItem });
       } catch (e) {
         console.log('error: ', e);
         io.emit(eventGet, { items: [] });

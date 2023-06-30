@@ -2,9 +2,7 @@ import http from 'http';
 import handler from 'serve-handler';
 // import nanobuffer from 'nanobuffer';
 import { Server } from 'socket.io';
-import { createListener } from './listeners.js';
-import { createApi } from './api.js';
-import { createItemsDb, createItemsListsDb } from './store.js';
+import { itemsModule, itemListsModule } from './items/index.js';
 
 // serve static assets
 const server = http.createServer((request, response) => {
@@ -31,15 +29,11 @@ io.on('connection', (socket) => {
   });
 });
 
-const itemsStore = createItemsDb();
-const itemsApi = createApi(itemsStore);
-const itemListeners = createListener(io, 'item', itemsApi);
-io.on('connection', itemListeners);
+io.on('connection', itemsModule.getListeners(io));
+// io.on('connection', createListener(io, 'item', itemsApi));
 
-const itemssListsStore = createItemsListsDb();
-const itemsListsApi = createApi(itemssListsStore);
-const itemsListsListeners = createListener(io, 'itemLists', itemsListsApi);
-io.on('connection', itemsListsListeners);
+io.on('connection', itemListsModule.getListeners(io));
+// io.on('connection', createListener(io, 'itemLists', itemsListsApi));
 
 const port = process.env.PORT || 8008;
 server.listen(port, () => console.log(`Server running at http://localhost:${port}`));

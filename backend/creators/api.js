@@ -20,8 +20,8 @@ function createPost(store) {
   return function post(item) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        store.add(item);
-        resolve();
+        const newItem = store.add(item);
+        resolve(newItem);
       }, operationDelayInMs / 4);
     });
   };
