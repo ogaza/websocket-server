@@ -21,6 +21,16 @@ export function createStore(initailState) {
 
       return newItem;
     },
+    update: function (item) {
+      const { id } = item;
+
+      const itemToEdit = store.find((x) => x.id === id);
+      const idx = store.findIndex((x) => x.id === id);
+
+      store.splice(idx, 1, { ...itemToEdit, ...item });
+
+      return store[idx];
+    },
     remove: function (itemId) {
       const idx = store.findIndex((x) => x.id === itemId);
       store.splice(idx, 1);

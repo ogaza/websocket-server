@@ -2,6 +2,7 @@ export function createApi(store) {
   return {
     get: createGet(store),
     post: createPost(store),
+    update: createUpdate(store),
     remove: createRemove(store)
   };
 }
@@ -22,6 +23,17 @@ function createPost(store) {
       setTimeout(() => {
         const newItem = store.add(item);
         resolve(newItem);
+      }, operationDelayInMs / 4);
+    });
+  };
+}
+
+function createUpdate(store) {
+  return function update(item) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const updatedItem = store.update(item);
+        resolve(updatedItem);
       }, operationDelayInMs / 4);
     });
   };
