@@ -9,6 +9,8 @@ export function createStore(initailState) {
 
       const filtered = store.filter((x) => x[firstKey] === options[firstKey]);
 
+      console.log('store:get:', filtered);
+
       return [...filtered];
     },
     add: function (item) {

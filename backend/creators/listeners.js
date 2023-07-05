@@ -5,7 +5,7 @@ export function createListener(io, namespace, api) {
 
   return async function listeners(socket) {
     socket.on(eventGet, async (options = {}) => {
-      console.log(`all ${namespace}s requested with options: `, options);
+      console.log(`all ${namespace} requested with options: `, options);
 
       try {
         const items = await api.get(options);
