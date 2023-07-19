@@ -33,6 +33,8 @@ function createUpdate(store) {
     return new Promise((resolve) => {
       setTimeout(() => {
         const updatedItem = store.update(item);
+        console.log('api::update, updatedItem:', updatedItem);
+
         resolve(updatedItem);
       }, operationDelayInMs / 4);
     });

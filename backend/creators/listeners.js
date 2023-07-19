@@ -31,12 +31,12 @@ export function createListener(io, namespace, api) {
     });
 
     socket.on(eventUpdate, async (item) => {
-      console.log(`received item to update ${namespace}: `, item);
+      console.log(`received ${namespace} to update: `, item);
 
       try {
-        const newItem = await api.post(item);
-        console.log('item added:', newItem);
-        io.emit(eventPost, { newItem });
+        const updatedItem = await api.update(item);
+        console.log('item edited:', updatedItem);
+        io.emit(eventUpdate, { updatedItem });
       } catch (e) {
         console.log('error: ', e);
         io.emit(eventGet, { items: [] });

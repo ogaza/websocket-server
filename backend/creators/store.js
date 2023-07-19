@@ -23,10 +23,9 @@ export function createStore(initailState) {
     },
     update: function (item) {
       const { id } = item;
-
       const itemToEdit = store.find((x) => x.id === id);
+      console.log('store::update, old item:', itemToEdit);
       const idx = store.findIndex((x) => x.id === id);
-
       store.splice(idx, 1, { ...itemToEdit, ...item });
 
       return store[idx];
